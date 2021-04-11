@@ -65,7 +65,7 @@ var Wynode=function(seq){
   this.seq=seq; //sequence this belongs
   this.seq.push(this); // register the node to the sequence
   if(typeof v!="undefined") this.v=v; // value
-  if(typeof v!="undefined") this.v=v;; // i[d]=dth dimension of index
+  if(typeof v!="undefined") this.v=v; // i[d]=dth dimension of index
   this.p; // parent node
   this.d; // diff node
   this.rightleg; // right leg
@@ -79,8 +79,32 @@ var Wyseq.prototype.at=function(i){
   return null;
 }
 
-var Wynode.prototype.getleft=function(n){
-  if(this.rightleg==null)
+var Wynode.prototype.left=function(){
+  if(this.memoleft!=null) return this.left;
+  var b=this.rightleg();
+  
+  //rightleg.parent
+  var bp;
+  if(b!=null){
+    bp=b.parent();
+  }else{// bottom nodes
+    var i=b.i.clone();
+    i[0]--;//just left
+    bp=this.seq.at(i);
+    if(bp==null){//origin 1
+      this.memoleft=null;
+    }
+  }
+  
+  //rightleg.parent.
+  var bpd=bp.diff();
+  if(bpd==null){//if bpd=1
+    bpd=bp;//bp takes over bpd
+  }
+  
+  this.memoleft=bpd;
+  
+  return this.memoleft;
 }
 
 var Wynode.prototype.getparent=function(c){
